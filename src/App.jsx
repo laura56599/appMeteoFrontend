@@ -1,35 +1,46 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import React from 'react'
+import CitySearch from './components/CitySearch'
+import WeatherDisplay from './components/WeatherDisplay'
+import LunarWidget from './components/LunarWidget'
+import { fetchWeatherData } from './services/weatherService'
 import './App.css'
+import LoginForm from './components/LoginForm'
 
-function App() {
-  const [count, setCount] = useState(0)
+const App = () => {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [weatherData, setWeatherData] = useState(null);
+
+  useEffect(() => {
+    // Verificar si hay un token en localStorage
+    const token = localStorage.getItem('token');
+    if (token) {
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleSearch = (city) => {
+    fetchWeatherData(city).then(data => setWeatherData(data));
+  };
+
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <h1>Weather App</h1>
+      {!isAuthenticated ? (
+        <LoginForm onLogin={handleLogin} />
+      ) : (
+        <>
+          <CitySearch onSearch={handleSearch} />
+          <WeatherDisplay weatherData={weatherData} />
+          <LunarWidget />
+        </>
+      )}
+    </div>
+  );
+};
 
-export default App
+export default App;
