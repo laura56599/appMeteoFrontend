@@ -1,15 +1,23 @@
-// src/services/api.js
+
 import axios from 'axios';
 
+const API_BASE_URL = 'http://localhost:3000';
+
+export const login = async (username, password) => {
+  const response = await fetch(`${API_BASE_URL}/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ username, password }),
+  });
+  if (!response.ok) throw new Error('Error en el login');
+  return response.json();
+};
+
+
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api', // Ajusta la URL según tu configuración
+  baseURL: 'http://localhost:4000/api', // Ajusta la URL según tu configuración
 });
 
-// Ejemplo de función para login
-export const login = async (credentials) => {
-  const { data } = await api.post('/auth/login', credentials);
-  return data; // Retorna el token recibido
-};
 
 // Ejemplo para obtener datos del clima
 export const getWeather = async (city, token) => {
