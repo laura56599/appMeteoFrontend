@@ -9,6 +9,7 @@ import './styles.css';
 function App() {
   const [token, setToken] = useState(null);
 
+  // Cargar el token de localStorage cuando la app inicia
   useEffect(() => {
     const savedToken = localStorage.getItem('token');
     if (savedToken) {
@@ -16,11 +17,13 @@ function App() {
     }
   }, []);
 
+  // Manejar el login guardando el token
   const handleLogin = (newToken) => {
     setToken(newToken);
     localStorage.setItem('token', newToken);
   };
 
+  // Manejar el logout eliminando el token
   const handleLogout = () => {
     setToken(null);
     localStorage.removeItem('token');
@@ -29,9 +32,9 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Redirigir la raíz ("/") a "/login" */}
+        {/* Redirigir la raíz ("/") a "/login" si no está autenticado */}
         <Route path="/" element={<Navigate to="/login" replace />} />
-        
+
         {/* Ruta de Login */}
         <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
         

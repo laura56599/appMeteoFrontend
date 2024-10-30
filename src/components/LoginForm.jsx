@@ -1,3 +1,4 @@
+// src/components/LoginForm.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles.css';
@@ -6,13 +7,13 @@ function LoginForm({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Hook para redireccionar
+  const navigate = useNavigate(); // Hook para redirigir
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:4000/auth/login', { // Asegúrate de usar el puerto correcto
+      const response = await fetch('http://localhost:4000/auth/login', { // Ajusta el puerto si es necesario
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -25,10 +26,10 @@ function LoginForm({ onLogin }) {
       }
 
       const data = await response.json();
-      onLogin(data.token); // Pasa el token al estado de App
-      localStorage.setItem('token', data.token); // Guarda el token en localStorage
+      onLogin(data.token); // Guarda el token en el estado y localStorage
+      localStorage.setItem('token', data.token); // Almacena el token en localStorage
 
-      // Redirigir al usuario a la pantalla de clima
+      // Redirige al usuario a /dashboard
       navigate('/dashboard');
     } catch (error) {
       setError(error.message);
@@ -63,10 +64,10 @@ function LoginForm({ onLogin }) {
           />
         </div>
         <button type="submit" className="login-button">Ingresar</button>
-        <button type="submit" className="login-button">Registrese</button>
       </form>
     </div>
   );
 }
 
 export default LoginForm;
+

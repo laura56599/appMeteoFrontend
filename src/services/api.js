@@ -1,7 +1,7 @@
 
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = 'http://localhost:4000';
 
 export const login = async (username, password) => {
   const response = await fetch(`${API_BASE_URL}/auth/login`, {
