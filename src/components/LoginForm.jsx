@@ -1,4 +1,3 @@
-// src/components/LoginForm.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../styles.css';
@@ -13,7 +12,7 @@ function LoginForm({ onLogin }) {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:4000/auth/login', { // Ajusta el puerto si es necesario
+      const response = await fetch('http://localhost:4000/auth/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -21,20 +20,26 @@ function LoginForm({ onLogin }) {
         body: JSON.stringify({ username, password }),
       });
 
+      console.log("Respuesta completa del servidor:", response);
+
       if (!response.ok) {
         throw new Error('Login fallido. Verifica tus credenciales.');
       }
 
       const data = await response.json();
-      onLogin(data.token); // Guarda el token en el estado y localStorage
-      localStorage.setItem('token', data.token); // Almacena el token en localStorage
-
-      // Redirige al usuario a /dashboard
-      navigate('/dashboard');
+    
+      if (data && data.access_token) {
+        onLogin(data.access_token); // Guarda el token en el estado y localStorage
+        localStorage.setItem('token', data.access_token); // Almacena el token en localStorage
+        navigate('/dashboard'); // Redirige al dashboard despues del login
+      } else {
+        throw new error("El servidor devolvio un token invalido")
+      }
     } catch (error) {
       setError(error.message);
     }
   };
+
 
   return (
     <div className="login-form-container">
@@ -70,4 +75,3 @@ function LoginForm({ onLogin }) {
 }
 
 export default LoginForm;
-

@@ -189,17 +189,42 @@ html {
     margin: 5px 0;
 }
 
-/* Map */
-.map-container {
-    width: 100%;
-    height: 300px;
-    margin: 20px 0;
-    background-color: #d3d3d3;
+/*Dashboard meteorologico*/
+.dashboard-container {
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.dashboard-header {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     align-items: center;
+    margin-bottom: 20px;
+}
+
+.logout-button {
+    background-color: #f04e4e;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.section {
+    margin-bottom: 20px;
+}
+
+.main-weather-info,
+.lunar-phase,
+.weekly-forecast {
+    padding: 10px;
     border-radius: 8px;
-    text-align: center;
+    background-color: #f1f1f1;
+}
+
+h2 {
     font-size: 1.2rem;
+    color: #333;
 }
 

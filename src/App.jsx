@@ -29,6 +29,7 @@ function App() {
     localStorage.removeItem('token');
   };
 
+
   return (
     <Router>
       <Routes>
@@ -37,7 +38,7 @@ function App() {
 
         {/* Ruta de Login */}
         <Route path="/login" element={<LoginForm onLogin={handleLogin} />} />
-        
+
         {/* Ruta Protegida para el Dashboard */}
         <Route
           path="/dashboard"
@@ -47,7 +48,7 @@ function App() {
             </ProtectedRoute>
           }
         />
-        
+
         {/* Redirección para rutas no definidas */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

@@ -21,10 +21,18 @@ const api = axios.create({
 
 // Ejemplo para obtener datos del clima
 export const getWeather = async (city, token) => {
-  const { data } = await api.get(`/weather?city=${city}`, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return data;
+  try {
+    const response = await axios.get(`http://localhost:4000/api/weather`, {
+      params: { city }, // Agregar el parámetro `city`
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Error al obtener el clima:", error);
+    throw error;
+  }
 };
 
 // Ejemplo para obtener datos de fase lunar
