@@ -1,13 +1,12 @@
-import React from 'react';
-
 function MainWeatherInfo({ data }) {
+  if (!data || !data.city) {
+    return <p>Cargando información del clima...</p>;
+  }
+
   return (
     <div>
-      <h2>{data.city}</h2>
-      <p>Temperatura: {data.temperature}°C</p>
-      <p>Estado: {data.condition}</p>
-      <p>Humedad: {data.humidity}%</p>
-      <p>Viento: {data.wind_speed} km/h</p>
+      <h2>Clima en {data.city}</h2>
+      <p>Temperatura actual: {data.temperature}°C</p>
     </div>
   );
 }
