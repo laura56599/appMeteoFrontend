@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Navbar, Nav, Button, Offcanvas } from 'react-bootstrap';
+import logo from '../assets/wapplogo.png';
 
 
 function HamburgerMenu({ onLogout }) {
@@ -11,7 +12,15 @@ function HamburgerMenu({ onLogout }) {
   return (
     <>
       <Navbar bg="primary" variant="dark" expand={false}>
-        <Navbar.Brand href="#">Dashboard Meteorológico</Navbar.Brand>
+        <Navbar.Brand href="#">
+          <img
+            src={logo}
+            alt="Logo"
+            className="d-inline-block align-top logo-img me-2"
+            width="30"
+            height="30"
+          />
+          Weather App</Navbar.Brand>
         <Navbar.Toggle aria-controls="offcanvasNavbar" onClick={handleShowMenu} />
       </Navbar>
       <Offcanvas show={showMenu} onHide={handleCloseMenu} placement="end">
@@ -23,6 +32,7 @@ function HamburgerMenu({ onLogout }) {
             <Nav.Link href="#weather">Información del Clima Actual</Nav.Link>
             <Nav.Link href="#lunar">Fase Lunar Actual</Nav.Link>
             <Nav.Link href="#forecast">Pronóstico Semanal</Nav.Link>
+            <Nav.Link href="#forecast">Favoritos</Nav.Link>
             <Button
               variant="danger"
               className="mt-3"

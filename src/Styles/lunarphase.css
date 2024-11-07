@@ -21,15 +21,75 @@
     border-top-left-radius: 10px;
     border-top-right-radius: 10px;
     text-align: center;
+    font-weight: bold;
 }
 
 .lunar-phase-card-body {
     padding: 15px;
     color: #333;
+    text-align: center;
 }
 
 .lunar-phase-card-body p {
     margin: 10px 0;
     font-size: 16px;
     line-height: 1.5;
+}
+
+.lunar-phase-image {
+    width: 100px;
+    height: 100px;
+    margin: 10px auto;
+    display: block;
+}
+
+/* Search Bar Styles */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #007bff;
+    padding: 10px 20px;
+    color: #fff;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logo-img {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+}
+
+.search-bar-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-bar {
+    width: 200px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+.search-button,
+.location-button {
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    margin-right: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-button:hover,
+.location-button:hover {
+    background-color: #218838;
 }

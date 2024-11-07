@@ -21,7 +21,7 @@ function WeatherDashboard({ onLogout, token }) {
         throw new Error('Error al obtener datos del clima');
       }
       const data = await response.json();
-      setWeatherData(data.data); // Verifica la estructura de `data` en la respuesta
+      setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
     } catch (error) {
       console.error('Error en la búsqueda de ciudad:', error.message);
     }
@@ -37,7 +37,7 @@ function WeatherDashboard({ onLogout, token }) {
             throw new Error('Error al obtener datos del clima de la ubicación actual');
           }
           const data = await response.json();
-          setWeatherData(data.data); // Verifica la estructura de `data` en la respuesta
+          setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
         } catch (error) {
           console.error('Error al obtener datos de la ubicación actual:', error.message);
         }
@@ -72,21 +72,28 @@ function WeatherDashboard({ onLogout, token }) {
     <div>
       <HamburgerMenu onLogout={onLogout} />
       <Header onSearch={handleCitySearch} onCurrentLocation={handleLocationSearch} />
-      <h1>Bienvenido al Dashboard Meteorológico</h1>
-      {weatherData && weatherData.days ? (
-        <>
-          <p>La temperatura actual es: {weatherData.days[0]?.temp} °C</p>
-          <MainWeatherInfo data={weatherData} />
-          <WeeklyForecast data={weatherData.days} />
-        </>
-      ) : (
-        <p>Cargando información del clima...</p>
-      )}
-      {lunarData ? (
-        <LunarPhase data={lunarData} />
-      ) : (
-        <p>Cargando información de la fase lunar...</p>
-      )}
+      <div className="container mt-4">
+        {weatherData && weatherData.days ? (
+          <>
+            <div className="card mt-4 p-3">
+              <h3>La temperatura actual es: {weatherData.days[0]?.temp} °C</h3>
+              <MainWeatherInfo data={weatherData} />
+              <WeeklyForecast data={weatherData.days} />
+            </div>
+          </>
+        ) : (
+          <div className="text-center mt-4">
+            <p>Cargando información del clima...</p>
+          </div>
+        )}
+        {lunarData ? (
+          <LunarPhase data={lunarData} />
+        ) : (
+          <div className="text-center mt-4">
+            <p>Cargando información de la fase lunar...</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
