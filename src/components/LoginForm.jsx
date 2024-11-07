@@ -1,18 +1,19 @@
-// src/components/LoginForm.jsx
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import '../styles.css';
+
 
 function LoginForm({ onLogin }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [email, setEmail] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate(); // Hook para redirigir
+  const [name, setName] = useState('');
+  const [lastName, setlastName] = useState('');
+  const navigate = useNavigate();
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
       const response = await fetch('http://localhost:4000/auth/login', {
         method: 'POST',
@@ -23,56 +24,160 @@ function LoginForm({ onLogin }) {
       });
 
       if (!response.ok) {
-        throw new Error('Login fallido. Verifica tus credenciales.');
+        throw new Error('Error en el login. Verifica tus credenciales.');
       }
 
       const data = await response.json();
-      onLogin(data.token); // Guarda el token en el estado y localStorage
-      localStorage.setItem('token', data.token); // Almacena el token en localStorage
+      onLogin(data.access_token);
+      navigate('/dashboard');
+    } catch (error) {
+      setError(error.message);
+    }
+  };
 
-      // Verificar que esta línea se ejecuta
-      console.log("Redirigiendo a /dashboard");
-      navigate('/dashboard'); // Redirige a la pantalla de clima
+  const handleRegister = async (e) => {
+    e.preventDefault();
+
+    const newUser = {
+      username,
+      password,
+      email,
+      name,
+      last_name: lastName, 
+    };
+
+    try {
+      const response = await fetch('http://localhost:4000/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newUser),
+      });
+
+      if (!response.ok) {
+        throw new Error('Error en el registro. Intenta nuevamente.');
+      }
+
+      setIsRegistering(false); // Cambiar a la vista de login
     } catch (error) {
       setError(error.message);
     }
   };
 
   return (
-    <div className="container d-flex justify-content-center align-items-center vh-100">
-      <div className="card p-4 shadow" style={{ width: '22rem' }}>
-        <form className="login-form" onSubmit={handleSubmit}>
-          <h2 className="text-center mb-4">Iniciar Sesión</h2>
-          {error && <p className="alert alert-danger text-center">{error}</p>}
-          <div className="form-group mb-3">
+    <div className="login-form-container">
+      {isRegistering ? (
+        <form className="login-form" onSubmit={handleRegister}>
+          <h2>Registrar Nuevo Usuario</h2>
+          {error && <p className="error-message">{error}</p>}
+          <div className="form-group">
+            <label htmlFor="name">Nombre</label>
+            <input
+              type="text"
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Ingrese su nombre"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="last_name">Apellido</label>
+            <input
+              type="text"
+              id="last_name"
+              value={lastName}
+              onChange={(e) => setlastName(e.target.value)}
+              placeholder="Ingrese su apellido"
+              required
+            />
+          </div>
+          <div className="form-group">
             <label htmlFor="username">Usuario</label>
             <input
               type="text"
               id="username"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="form-control"
               placeholder="Ingrese su usuario"
               required
             />
           </div>
-          <div className="form-group mb-4">
+          <div className="form-group">
+            <label htmlFor="email">Correo Electrónico</label>
+            <input
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Ingrese su correo"
+              required
+            />
+          </div>
+          <div className="form-group">
             <label htmlFor="password">Contraseña</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="form-control"
               placeholder="Ingrese su contraseña"
               required
             />
           </div>
-          <button type="submit" className="btn btn-primary w-100">Ingresar</button>
+          <button type="submit" className="login-button">
+            Registrar
+          </button>
+          <button
+            type="button"
+            className="switch-button"
+            onClick={() => setIsRegistering(false)}
+          >
+            ¿Ya tienes cuenta? Iniciar Sesión
+          </button>
         </form>
-      </div>
+      ) : (
+        <form className="login-form" onSubmit={handleLogin}>
+          <h2>Iniciar Sesión</h2>
+          {error && <p className="error-message">{error}</p>}
+          <div className="form-group">
+            <label htmlFor="username">Usuario</label>
+            <input
+              type="text"
+              id="username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Ingrese su usuario"
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Ingrese su contraseña"
+              required
+            />
+          </div>
+          <button type="submit" className="login-button">
+            Ingresar
+          </button>
+          <button
+            type="button"
+            className="switch-button"
+            onClick={() => setIsRegistering(true)}
+          >
+            ¿No tienes cuenta? Regístrate
+          </button>
+        </form>
+      )}
     </div>
   );
 }
 
 export default LoginForm;
+

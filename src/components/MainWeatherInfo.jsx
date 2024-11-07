@@ -1,6 +1,6 @@
 function MainWeatherInfo({ data }) {
   if (!data || !data.city) {
-    return <p>Cargando información del clima...</p>;
+    return <p></p>;
   }
 
   return (

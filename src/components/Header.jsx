@@ -1,14 +1,18 @@
-
 import React from 'react';
 
 function Header({ onSearch, onCurrentLocation }) {
   const [city, setCity] = React.useState('');
 
   const handleSearch = () => {
+    if (!city.trim()) {
+      alert("Por favor, ingrese una ciudad.");
+      return;
+    }
     onSearch(city);
   };
 
   const handleCurrentLocation = () => {
+    console.log("Buscando ubicación actual");
     onCurrentLocation();
   };
 

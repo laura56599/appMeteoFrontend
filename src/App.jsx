@@ -1,10 +1,10 @@
-// src/App.jsx
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginForm from './components/LoginForm';
 import WeatherDashboard from './components/WeatherDashboard';
 import ProtectedRoute from './components/ProtectedRoute';
-import './styles.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
 
 function App() {
   const [token, setToken] = useState(null);

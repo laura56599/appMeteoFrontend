@@ -1,0 +1,36 @@
+.weekly-forecast-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+    padding: 20px;
+}
+
+.forecast-day-card {
+    background: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 15px;
+    width: 200px;
+    transition: transform 0.3s ease-in-out;
+}
+
+.forecast-day-card:hover {
+    transform: translateY(-5px);
+}
+
+.forecast-day-card-header {
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #007bff;
+    /* Cambia este color si necesitas otro */
+}
+
+.forecast-day-card-body {
+    text-align: left;
+}
+
+.forecast-day {
+    font-size: 1.2em;
+}
