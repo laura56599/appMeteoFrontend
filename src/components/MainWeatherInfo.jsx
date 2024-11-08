@@ -1,3 +1,5 @@
+import PropTypes from "prop-types";
+
 function MainWeatherInfo({ data }) {
   if (!data || !data.city) {
     return <p></p>;
@@ -10,5 +12,12 @@ function MainWeatherInfo({ data }) {
     </div>
   );
 }
+
+MainWeatherInfo.propTypes = {
+  data: PropTypes.shape({
+    city: PropTypes.string.isRequired,
+    temperature: PropTypes.number.isRequired,
+  }).isRequired,
+};
 
 export default MainWeatherInfo;

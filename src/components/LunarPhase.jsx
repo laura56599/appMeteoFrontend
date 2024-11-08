@@ -1,33 +1,33 @@
-import React from 'react';
-import '../styles/lunarphase.css'; // Archivo CSS para la tarjeta
+import React from "react";
+import "../styles/lunarphase.css"; // Archivo CSS para la tarjeta
+import PropTypes from "prop-types";
 
-import newMoonImage from '../assets/newMoon.svg';
-import fullMoonImage from '../assets/fullMoon.svg';
-import defaultMoonImage from '../assets/defaultMoon.svg';
+import newMoonImage from "../assets/newMoon.svg";
+import fullMoonImage from "../assets/fullMoon.svg";
+import defaultMoonImage from "../assets/defaultMoon.svg";
 
 function LunarPhase({ data }) {
   let phaseImage;
   let phase;
 
   // Verifica que data.phase exista y sea una cadena de texto
-  if (data && data.phase && typeof data.phase === 'string') {
+  if (data && data.phase && typeof data.phase === "string") {
     phase = data.phase.toLowerCase();
   } else {
-    phase = 'default';
+    phase = "default";
   }
 
   switch (phase) {
-    case 'new moon':
+    case "new moon":
       phaseImage = newMoonImage;
       break;
-    case 'full moon':
+    case "full moon":
       phaseImage = fullMoonImage;
       break;
     // Añade más casos según las diferentes fases lunares...
     default:
       phaseImage = defaultMoonImage;
   }
-
 
   return (
     <div className="lunar-phase-card">
@@ -43,6 +43,8 @@ function LunarPhase({ data }) {
     </div>
   );
 }
+LunarPhase.propTypes = {
+  data: PropTypes.func.isRequired,
+};
 
 export default LunarPhase;
-

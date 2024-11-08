@@ -1,17 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import LoginForm from './components/LoginForm';
-import WeatherDashboard from './components/WeatherDashboard';
-import ProtectedRoute from './components/ProtectedRoute';
-import 'bootstrap/dist/css/bootstrap.min.css';
-
+import React, { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import LoginForm from "./components/LoginForm";
+import WeatherDashboard from "./components/WeatherDashboard";
+import ProtectedRoute from "./components/ProtectedRoute";
+import Favorites from "./components/Favorites";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 function App() {
   const [token, setToken] = useState(null);
 
   // Cargar el token de localStorage cuando la app inicia
   useEffect(() => {
-    const savedToken = localStorage.getItem('token');
+    const savedToken = localStorage.getItem("token");
     if (savedToken) {
       setToken(savedToken);
     }
@@ -20,15 +25,30 @@ function App() {
   // Manejar el login guardando el token
   const handleLogin = (newToken) => {
     setToken(newToken);
-    localStorage.setItem('token', newToken);
+    localStorage.setItem("token", newToken);
   };
 
   // Manejar el logout eliminando el token
   const handleLogout = () => {
     setToken(null);
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
   };
 
+  // Agregar un nuevo favorito
+  const handleAddFavorite = (location) => {
+    if (!favorites.includes(location)) {
+      const updatedFavorites = [...favorites, location];
+      setFavorites(updatedFavorites);
+      localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+    }
+  };
+
+  // Eliminar un favorito
+  const handleRemoveFavorite = (location) => {
+    const updatedFavorites = favorites.filter((fav) => fav !== location);
+    setFavorites(updatedFavorites);
+    localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
+  };
 
   return (
     <Router>
@@ -44,7 +64,20 @@ function App() {
           path="/dashboard"
           element={
             <ProtectedRoute token={token} redirectTo="/login">
-              <WeatherDashboard onLogout={handleLogout} />
+              <WeatherDashboard onLogout={handleLogout} token={token} />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/favorites"
+          element={
+            <ProtectedRoute token={token} redirectTo="/login">
+              <Favorites
+                favorites={favorites}
+                onSelectFavorite={handleAddFavorite}
+                onRemoveFavorite={handleRemoveFavorite}
+              />
             </ProtectedRoute>
           }
         />

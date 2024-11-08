@@ -1,9 +1,9 @@
-import React from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import Logo from '../assets/wapplogo.png';
+import React from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import PropTypes from "prop-types";
 
 function Header({ onSearch, onCurrentLocation }) {
-  const [city, setCity] = React.useState('');
+  const [city, setCity] = React.useState("");
 
   const handleSearch = () => {
     onSearch(city);
@@ -18,7 +18,7 @@ function Header({ onSearch, onCurrentLocation }) {
     console.log("Buscando ubicación actual");
     onCurrentLocation();
   };
-return (
+  return (
     <header className="header container-fluid bg-primary text-light py-3 d-flex justify-content-between align-items-center">
       <div className="search-container d-flex align-items-center">
         <input
@@ -31,7 +31,10 @@ return (
         <button onClick={handleSearch} className="btn btn-light me-2">
           Buscar
         </button>
-        <button onClick={handleCurrentLocation} className="btn btn-outline-light">
+        <button
+          onClick={handleCurrentLocation}
+          className="btn btn-outline-light"
+        >
           Ubicación Actual
         </button>
       </div>
@@ -39,4 +42,8 @@ return (
   );
 }
 
+Header.propTypes = {
+  onSearch: PropTypes.func.isRequired,
+  onCurrentLocation: PropTypes.func.isRequired,
+};
 export default Header;
