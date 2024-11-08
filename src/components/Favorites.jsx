@@ -39,3 +39,4 @@ function Favorites({ favorites, onSelectFavorite, onRemoveFavorite }) {
 }
 
 export default Favorites;
+sdfg;
