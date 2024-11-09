@@ -7,7 +7,7 @@ import HamburgerMenu from "./HamMenu";
 import Header from "./Header";
 import PropTypes from "prop-types";
 
-function WeatherDashboard({ onLogout, token }) {
+function WeatherDashboard({ onLogout, token, onAddFavorite }) {
   const [weatherData, setWeatherData] = useState(null);
   const [lunarData, setLunarData] = useState(null);
   const [cityName, setCityName] = useState(""); // Estado para el nombre de la ciudad
@@ -27,8 +27,7 @@ function WeatherDashboard({ onLogout, token }) {
         throw new Error("Error al obtener datos del clima");
       }
       const data = await response.json();
-      setWeatherData(data?.data); // Almacenar los datos del clima
-      setCityName(city); // Guardar el nombre de la ciudad actual
+      setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
     } catch (error) {
       console.error("Error en la búsqueda de ciudad:", error.message);
     }
@@ -49,8 +48,7 @@ function WeatherDashboard({ onLogout, token }) {
               );
             }
             const data = await response.json();
-            setWeatherData(data?.data); // Almacenar los datos del clima
-            setCityName(data?.data?.city || "Ubicación Actual"); // Guardar el nombre de la ciudad actual si está disponible
+            setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
           } catch (error) {
             console.error(
               "Error al obtener datos de la ubicación actual:",
@@ -109,28 +107,21 @@ function WeatherDashboard({ onLogout, token }) {
 };
 
   useEffect(() => {
-  async function fetchData() {
-    try {
-      const location = "Bogota"; // Ciudad predeterminada
-      const weather = await getWeather(location, token);
-      setWeatherData(weather);
-      setCityName(location);
+    async function fetchData() {
+      try {
+        const location = "Bogota"; // Puedes cambiar esto a la ciudad predeterminada que prefieras
+        const weather = await getWeather(location, token);
+        setWeatherData(weather);
 
-      const lunar = await getLunarPhase(location, token);
-      setLunarData(lunar);
-
-      // Obtener favoritos de la base de datos
-      const response = await fetch(`http://localhost:4000/favorite/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (response.ok) {
-        const favoritesData = await response.json();
-        setFavorites(favoritesData.map(fav => fav.city));
+        const lunar = await getLunarPhase(location, token);
+        setLunarData(lunar);
+      } catch (error) {
+        console.error(
+          "Error al obtener los datos del clima o la fase lunar:",
+          error
+        );
       }
-    } catch (error) {
-      console.error("Error al obtener los datos del clima o la fase lunar:", error);
     }
-  }
 
   fetchData();
 }, [token]);
@@ -162,7 +153,11 @@ function WeatherDashboard({ onLogout, token }) {
           </div>
         )}
         {lunarData ? (
-          <LunarPhase data={lunarData} />
+          <LunarPhase data={{
+            phase: lunarData.phase,
+            illumination: lunarData.illumination || 0,
+            date: lunarData.date
+          }} />
         ) : (
           <div className="text-center mt-4">
             <p>Cargando información de la fase lunar...</p>
@@ -186,10 +181,5 @@ function WeatherDashboard({ onLogout, token }) {
     </div>
   );
 }
-
-WeatherDashboard.propTypes = {
-  onLogout: PropTypes.func.isRequired,
-  token: PropTypes.string,
-};
 
 export default WeatherDashboard;
