@@ -2,15 +2,17 @@ import React, { useEffect, useState } from "react";
 import { getWeather, getLunarPhase } from "../services/api";
 import MainWeatherInfo from "./MainWeatherInfo";
 import LunarPhase from "./LunarPhase";
-import WeeklyForecast from "./WeeklyForecast";
+import WeeklyForecast from "./Weeklyforecast";
 import HamburgerMenu from "./HamMenu";
 import Header from "./Header";
 import PropTypes from "prop-types";
 
-function WeatherDashboard({ onLogout, token, onAddFavorite }) {
+function WeatherDashboard({ onLogout, token }) {
   const [weatherData, setWeatherData] = useState(null);
   const [lunarData, setLunarData] = useState(null);
-  const [currentCity, setCurrentCity] = useState("");
+  const [cityName, setCityName] = useState(""); // Estado para el nombre de la ciudad
+  const [favorites, setFavorites] = useState([]); // Estado para los favoritos
+  const [userId, setUserId] = useState(null);
 
   const handleCitySearch = async (city) => {
     if (!city.trim()) {
@@ -25,7 +27,8 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
         throw new Error("Error al obtener datos del clima");
       }
       const data = await response.json();
-      setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
+      setWeatherData(data?.data); // Almacenar los datos del clima
+      setCityName(city); // Guardar el nombre de la ciudad actual
     } catch (error) {
       console.error("Error en la búsqueda de ciudad:", error.message);
     }
@@ -46,7 +49,8 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
               );
             }
             const data = await response.json();
-            setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
+            setWeatherData(data?.data); // Almacenar los datos del clima
+            setCityName(data?.data?.city || "Ubicación Actual"); // Guardar el nombre de la ciudad actual si está disponible
           } catch (error) {
             console.error(
               "Error al obtener datos de la ubicación actual:",
@@ -67,26 +71,69 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
     }
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const location = "Bogota"; // Puedes cambiar esto a la ciudad predeterminada que prefieras
-        const weather = await getWeather(location, token);
-        setWeatherData(weather);
+  // Función para agregar la ciudad actual a favoritos
+  
+  const handleAddFavorite = async () => {
+  if (!cityName) {
+    alert("No hay ninguna ciudad seleccionada para agregar a favoritos.");
+    return;
+  }
 
-        const lunar = await getLunarPhase(location, token);
-        setLunarData(lunar);
-      } catch (error) {
-        console.error(
-          "Error al obtener los datos del clima o la fase lunar:",
-          error
-        );
-      }
+  // Evitar duplicados en favoritos en el estado local
+  if (favorites.includes(cityName)) {
+    alert("Esta ciudad ya está en tus favoritos.");
+    return;
+  }
+
+  try {
+    // Llamada al backend para guardar el favorito
+    const response = await fetch('http://localhost:4000/favorite/addfav', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`, // Asegúrate de que el token está configurado
+      },
+      body: JSON.stringify({ city: cityName, userId }), // Incluye el userId y cityName
+    });
+
+    if (!response.ok) {
+      throw new Error("Error al agregar favorito en la base de datos");
     }
 
-    fetchData();
-  }, [token]);
+    // Si se guarda correctamente en la base de datos, actualiza el estado local
+    setFavorites([...favorites, cityName]);
+    alert(`${cityName} ha sido agregada a tus favoritos.`);
+  } catch (error) {
+    console.error("Error al guardar el favorito:", error.message);
+  }
+};
 
+  useEffect(() => {
+  async function fetchData() {
+    try {
+      const location = "Bogota"; // Ciudad predeterminada
+      const weather = await getWeather(location, token);
+      setWeatherData(weather);
+      setCityName(location);
+
+      const lunar = await getLunarPhase(location, token);
+      setLunarData(lunar);
+
+      // Obtener favoritos de la base de datos
+      const response = await fetch(`http://localhost:4000/favorite/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (response.ok) {
+        const favoritesData = await response.json();
+        setFavorites(favoritesData.map(fav => fav.city));
+      }
+    } catch (error) {
+      console.error("Error al obtener los datos del clima o la fase lunar:", error);
+    }
+  }
+
+  fetchData();
+}, [token]);
   return (
     <div>
       <HamburgerMenu onLogout={onLogout} />
@@ -100,6 +147,12 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
             <div className="card mt-4 p-3">
               <h3>La temperatura actual es: {weatherData.days[0]?.temp} °C</h3>
               <MainWeatherInfo data={weatherData} />
+              <button
+                onClick={handleAddFavorite}
+                className="btn btn-primary mt-2"
+              >
+                Agregar a Favoritos
+              </button>
               <WeeklyForecast data={weatherData.days} />
             </div>
           </>
@@ -116,8 +169,27 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
           </div>
         )}
       </div>
+
+      {/* Lista de favoritos */}
+      <div className="mt-4">
+        <h4>Tus Ciudades Favoritas</h4>
+        <ul>
+          {favorites.length > 0 ? (
+            favorites.map((favorite, index) => (
+              <li key={index}>{favorite}</li>
+            ))
+          ) : (
+            <p>No tienes ciudades favoritas guardadas.</p>
+          )}
+        </ul>
+      </div>
     </div>
   );
 }
+
+WeatherDashboard.propTypes = {
+  onLogout: PropTypes.func.isRequired,
+  token: PropTypes.string,
+};
 
 export default WeatherDashboard;
