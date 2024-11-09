@@ -4,30 +4,49 @@ import PropTypes from "prop-types";
 
 import newMoonImage from "../assets/newMoon.svg";
 import fullMoonImage from "../assets/fullMoon.svg";
+import crescentMoon from "../assets/crescentMoon.svg";
+import waxinggibbous from "../assets/waxinggibbous.svg";
+import waninggibbous from "../assets/waninggibbous.svg";
 import defaultMoonImage from "../assets/defaultMoon.svg";
 
 function LunarPhase({ data }) {
   let phaseImage;
-  let phase;
+  let phaseDescription;
+  let illumination;
+  let formattedDate;
 
-  // Verifica que data.phase exista y sea una cadena de texto
-  if (data && data.phase && typeof data.phase === "string") {
-    phase = data.phase.toLowerCase();
-  } else {
-    phase = "default";
-  }
+  if (data && data.phase && typeof data.phase === "number") {
+    const phase = data.phase;
 
-  switch (phase) {
-    case "new moon":
+    // Asignar fase lunar a valor correspondiente
+    if (phase >= 0 && phase < 0.05) {
+      phaseDescription = "Luna Nueva";
       phaseImage = newMoonImage;
-      break;
-    case "full moon":
+    } else if (phase >= 0.05 && phase < 0.25) {
+      phaseDescription = "Creciente";
+      phaseImage = waxinggibbous;
+    } else if (phase >= 0.25 && phase < 0.5) {
+      phaseDescription = "Cuarto Creciente";
+      phaseImage = crescentMoon;
+    } else if (phase >= 0.5 && phase < 0.75) {
+      phaseDescription = "Luna Llena";
       phaseImage = fullMoonImage;
-      break;
-    // Añade más casos según las diferentes fases lunares...
-    default:
-      phaseImage = defaultMoonImage;
+    } else if (phase >= 0.75 && phase < 1) {
+      phaseDescription = "Gibosa Menguante";
+      phaseImage = waninggibbous;
+    } else {
+      phaseDescription = "Luna Nueva";
+      phaseImage = newMoonImage;
+    }
+
+    // Mostrar porcentaje de iluminación
+    illumination = `${(data.illumination * 100).toFixed(0)}%`;
+  } else {
+    phaseDescription = "Fase Desconocida";
+    phaseImage = defaultMoonImage;
+    illumination = "Desconocido";
   }
+
 
   return (
     <div className="lunar-phase-card">
@@ -35,9 +54,9 @@ function LunarPhase({ data }) {
         <h3>Fase Lunar Actual</h3>
       </div>
       <div className="lunar-phase-card-body">
-        <img src={phaseImage} alt={data.phase} className="lunar-phase-image" />
-        <p>Fase Lunar: {data.phase}</p>
-        <p>Iluminación: {data.illumination}%</p>
+        <img src={phaseImage} alt={phaseDescription} className="lunar-phase-image" />
+        <p>Fase Lunar: {phaseDescription}</p>
+        <p>Iluminación: {illumination}</p>
         <p>Fecha: {data.date}</p>
       </div>
     </div>

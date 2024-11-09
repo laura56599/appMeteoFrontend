@@ -7,7 +7,7 @@ import HamburgerMenu from "./HamMenu";
 import Header from "./Header";
 import PropTypes from "prop-types";
 
-function WeatherDashboard({ onLogout, token, onAddFavorite }) {
+function WeatherDashboard({ onLogout, token, onAddFavorite, lunarData: moonData }) {
   const [weatherData, setWeatherData] = useState(null);
   const [lunarData, setLunarData] = useState(null);
   const [currentCity, setCurrentCity] = useState("");
@@ -25,7 +25,7 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
         throw new Error("Error al obtener datos del clima");
       }
       const data = await response.json();
-      setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
+      setWeatherData(data?.data);
     } catch (error) {
       console.error("Error en la búsqueda de ciudad:", error.message);
     }
@@ -46,7 +46,7 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
               );
             }
             const data = await response.json();
-            setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
+            setWeatherData(data?.data);
           } catch (error) {
             console.error(
               "Error al obtener datos de la ubicación actual:",
@@ -70,12 +70,21 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
   useEffect(() => {
     async function fetchData() {
       try {
-        const location = "Bogota"; // Puedes cambiar esto a la ciudad predeterminada que prefieras
+        const location = "Bogota"; 
         const weather = await getWeather(location, token);
         setWeatherData(weather);
 
         const lunar = await getLunarPhase(location, token);
-        setLunarData(lunar);
+        const lunarData = {
+          phase: lunar.phase,
+          illumination: lunar.illumination || 0,
+          date: new Date().toLocaleDateString("es-ES", {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }),
+        };
+        setLunarData(lunarData);
       } catch (error) {
         console.error(
           "Error al obtener los datos del clima o la fase lunar:",
@@ -109,7 +118,11 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
           </div>
         )}
         {lunarData ? (
-          <LunarPhase data={lunarData} />
+          <LunarPhase data={{
+            phase: lunarData.phase,
+            illumination: lunarData.illumination || 0,
+            date: lunarData.date
+          }} />
         ) : (
           <div className="text-center mt-4">
             <p>Cargando información de la fase lunar...</p>
@@ -119,5 +132,6 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
     </div>
   );
 }
+
 
 export default WeatherDashboard;
