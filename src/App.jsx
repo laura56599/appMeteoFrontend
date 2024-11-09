@@ -36,8 +36,8 @@ function App() {
 
   // Agregar un nuevo favorito
   const handleAddFavorite = (location) => {
-    if (!favorites.includes(location)) {
-      const updatedFavorites = [...favorites, location];
+    if (!Favorites.includes(location)) {
+      const updatedFavorites = [...Favorites, location];
       setFavorites(updatedFavorites);
       localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
     }
@@ -45,7 +45,7 @@ function App() {
 
   // Eliminar un favorito
   const handleRemoveFavorite = (location) => {
-    const updatedFavorites = favorites.filter((fav) => fav !== location);
+    const updatedFavorites = Favorites.filter((fav) => fav !== location);
     setFavorites(updatedFavorites);
     localStorage.setItem("favorites", JSON.stringify(updatedFavorites));
   };
@@ -74,7 +74,7 @@ function App() {
           element={
             <ProtectedRoute token={token} redirectTo="/login">
               <Favorites
-                favorites={favorites}
+                favorites={Favorites}
                 onSelectFavorite={handleAddFavorite}
                 onRemoveFavorite={handleRemoveFavorite}
               />

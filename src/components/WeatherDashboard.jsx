@@ -120,8 +120,4 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
   );
 }
 
-WeatherDashboard.propTypes = {
-  onLogout: PropTypes.func.isRequired,
-  token: PropTypes.func.isRequired,
-};
 export default WeatherDashboard;

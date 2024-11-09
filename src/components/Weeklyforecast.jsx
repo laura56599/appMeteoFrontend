@@ -21,8 +21,6 @@ function WeeklyForecast({ data }) {
     </div>
   );
 }
-WeeklyForecast.PropTypes = {
-  data: PropTypes.func.isRequired,
-};
+
 
 export default WeeklyForecast;

@@ -42,8 +42,4 @@ function Header({ onSearch, onCurrentLocation }) {
   );
 }
 
-Header.propTypes = {
-  onSearch: PropTypes.func.isRequired,
-  onCurrentLocation: PropTypes.func.isRequired,
-};
 export default Header;

@@ -13,11 +13,5 @@ function MainWeatherInfo({ data }) {
   );
 }
 
-MainWeatherInfo.propTypes = {
-  data: PropTypes.shape({
-    city: PropTypes.string.isRequired,
-    temperature: PropTypes.number.isRequired,
-  }).isRequired,
-};
 
 export default MainWeatherInfo;

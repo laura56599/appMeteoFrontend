@@ -43,8 +43,6 @@ function LunarPhase({ data }) {
     </div>
   );
 }
-LunarPhase.propTypes = {
-  data: PropTypes.func.isRequired,
-};
+
 
 export default LunarPhase;
