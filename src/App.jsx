@@ -10,6 +10,7 @@ import WeatherDashboard from "./components/WeatherDashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
 import Favorites from "./components/Favorites";
 import "bootstrap/dist/css/bootstrap.min.css";
+import FavoritesView from "./components/FavoritesView";
 
 function App() {
   const [token, setToken] = useState(null);
@@ -73,6 +74,7 @@ function App() {
           path="/favorites"
           element={
             <ProtectedRoute token={token} redirectTo="/login">
+              <FavoritesView token={token} />
               <Favorites
                 favorites={Favorites}
                 onSelectFavorite={handleAddFavorite}
