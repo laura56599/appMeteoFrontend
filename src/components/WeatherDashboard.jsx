@@ -16,61 +16,63 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
 
   const handleCitySearch = async (city) => {
     if (!city.trim()) {
-      alert("Por favor, ingrese una ciudad válida.");
-      return;
+    alert("Por favor, ingrese una ciudad válida.");
+    return;
+  }
+  try {
+    const response = await fetch(
+      `http://localhost:4000/weather?location=${city}`
+    );
+    if (!response.ok) {
+      throw new Error("Error al obtener datos del clima");
     }
-    try {
-      const response = await fetch(
-        `http://localhost:4000/weather?location=${city}`
-      );
-      if (!response.ok) {
-        throw new Error("Error al obtener datos del clima");
-      }
-      const data = await response.json();
-      setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
-    } catch (error) {
-      console.error("Error en la búsqueda de ciudad:", error.message);
-    }
-  };
+    const data = await response.json();
+    setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
+    setCityName(city); // Actualiza el nombre de la ciudad
+  } catch (error) {
+    console.error("Error en la búsqueda de ciudad:", error.message);
+  }
+};
 
   const handleLocationSearch = async () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (position) => {
-          const { latitude, longitude } = position.coords;
-          try {
-            const response = await fetch(
-              `http://localhost:4000/weather/location?lat=${latitude}&lon=${longitude}`
-            );
-            if (!response.ok) {
-              throw new Error(
-                "Error al obtener datos del clima de la ubicación actual"
-              );
-            }
-            const data = await response.json();
-            setWeatherData(data?.data); // Verifica la estructura de `data` en la respuesta
-          } catch (error) {
-            console.error(
-              "Error al obtener datos de la ubicación actual:",
-              error.message
+     if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        try {
+          const response = await fetch(
+            `http://localhost:4000/weather/location?lat=${latitude}&lon=${longitude}`
+          );
+          if (!response.ok) {
+            throw new Error(
+              "Error al obtener datos del clima de la ubicación actual"
             );
           }
-        },
-        (error) => {
-          console.error("Error obteniendo la ubicación:", error.message);
-          alert(
-            "Error obteniendo la ubicación. Asegúrate de permitir acceso a la ubicación."
+          const data = await response.json();
+          setWeatherData(data?.data);
+          setCityName(data?.data?.city); // Actualiza el nombre de la ciudad con el valor de la respuesta
+        } catch (error) {
+          console.error(
+            "Error al obtener datos de la ubicación actual:",
+            error.message
           );
         }
-      );
-    } else {
-      console.error("Geolocalización no soportada en este navegador.");
-      alert("Tu navegador no soporta la geolocalización.");
-    }
+      },
+      (error) => {
+        console.error("Error obteniendo la ubicación:", error.message);
+        alert(
+          "Error obteniendo la ubicación. Asegúrate de permitir acceso a la ubicación."
+        );
+      }
+    );
+  } else {
+    console.error("Geolocalización no soportada en este navegador.");
+    alert("Tu navegador no soporta la geolocalización.");
+  }
   };
 
   // Función para agregar la ciudad actual a favoritos
-  
+
   const handleAddFavorite = async () => {
   if (!cityName) {
     alert("No hay ninguna ciudad seleccionada para agregar a favoritos.");
@@ -83,6 +85,9 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
     return;
   }
 
+  // Añade aquí la constante o estado de `country`
+  const country = "Colombia"; // Asegúrate de asignar el país correspondiente
+  
   try {
     // Llamada al backend para guardar el favorito
     const response = await fetch('http://localhost:4000/favorite/addfav', {
@@ -91,7 +96,7 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
         'Content-Type': 'application/json',
         Authorization: `Bearer ${token}`, // Asegúrate de que el token está configurado
       },
-      body: JSON.stringify({ city: cityName, userId }), // Incluye el userId y cityName
+      body: JSON.stringify({ city: cityName, country, userId }), // Incluye `country`, `cityName` y `userId`
     });
 
     if (!response.ok) {
@@ -105,6 +110,7 @@ function WeatherDashboard({ onLogout, token, onAddFavorite }) {
     console.error("Error al guardar el favorito:", error.message);
   }
 };
+
 
   useEffect(() => {
     async function fetchData() {
