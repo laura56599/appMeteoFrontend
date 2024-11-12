@@ -13,7 +13,10 @@ function LunarPhase({ data }) {
   let phaseImage;
   let phaseDescription;
   let illumination;
-  let formattedDate;
+  let formattedDate = new Date().toLocaleDateString();  // Obtener la fecha actual
+
+  // Verifica que data y los datos de fase estén presentes
+  console.log("Datos recibidos:", data);  // Para depurar
 
   if (data && data.phase && typeof data.phase === "number") {
     const phase = data.phase;
@@ -39,14 +42,13 @@ function LunarPhase({ data }) {
       phaseImage = newMoonImage;
     }
 
-    // Mostrar porcentaje de iluminación
-    illumination = `${(data.illumination * 100).toFixed(0)}%`;
+    // Calcular iluminación como un porcentaje basado en la fase
+    illumination = `${(phase * 100).toFixed(0)}%`;  // Se multiplica por 100 para convertirlo a porcentaje
   } else {
     phaseDescription = "Fase Desconocida";
     phaseImage = defaultMoonImage;
     illumination = "Desconocido";
   }
-
 
   return (
     <div className="lunar-phase-card">
@@ -57,11 +59,12 @@ function LunarPhase({ data }) {
         <img src={phaseImage} alt={phaseDescription} className="lunar-phase-image" />
         <p>Fase Lunar: {phaseDescription}</p>
         <p>Iluminación: {illumination}</p>
-        <p>Fecha: {data.date}</p>
+        <p>Fecha: {formattedDate}</p>  {/* Mostrar la fecha actual */}
       </div>
     </div>
   );
 }
+
 
 
 export default LunarPhase;

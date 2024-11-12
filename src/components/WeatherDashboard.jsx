@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { getWeather, getLunarPhase } from "../services/api";
 import LunarPhase from "./LunarPhase";
-import WeeklyForecast from "./Weeklyforecast";
+import WeeklyForecast from "./WeeklyForecast";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
 import HamburgerMenu from "./HamMenu";
 import Header from "./Header";
@@ -13,6 +13,7 @@ function WeatherDashboard({ onLogout, token = "", onAddFavorite = () => {} }) {
   const [cityName, setCityName] = useState("Bogota");
   const [favorites, setFavorites] = useState([]);
 
+  // Manejo de búsqueda de ciudad
   const handleCitySearch = async (city) => {
     if (!city.trim()) {
       alert("Por favor, ingrese una ciudad válida.");
@@ -24,41 +25,56 @@ function WeatherDashboard({ onLogout, token = "", onAddFavorite = () => {} }) {
       setCityName(city);
     } catch (error) {
       console.error("Error en la búsqueda de ciudad:", error.message);
+      alert("Error al obtener los datos de la ciudad.");
     }
   };
 
+  // Manejo de agregar a favoritos
   const handleAddFavorite = () => {
-    if (!favorites.includes(cityName)) {
-      setFavorites([...favorites, cityName]);
-      onAddFavorite(cityName);
-      alert(`${cityName} ha sido agregada a tus favoritos.`);
+    if (!favorites.includes(cityName, country)) {
+      setFavorites([...favorites, cityName, country]);
+      onAddFavorite(cityName, country);
+      alert(`${cityName, country} ha sido agregada a tus favoritos.`);
     } else {
       alert("Esta ciudad ya está en tus favoritos.");
     }
   };
 
-  // Función para obtener ubicación actual
+  // Obtener ubicación actual
   const handleCurrentLocation = async () => {
-    navigator.geolocation.getCurrentPosition(async (position) => {
-      const { latitude, longitude } = position.coords;
-      try {
-        const data = await getWeather(`${latitude},${longitude}`, token);
-        setWeatherData(data);
-        setCityName("Ubicación actual");
-      } catch (error) {
+    navigator.geolocation.getCurrentPosition(
+      async (position) => {
+        const { latitude, longitude } = position.coords;
+        console.log("Coordenadas obtenidas:", latitude, longitude); // Añadir log para depuración
+  
+        // Cambia aquí para pasar las coordenadas en lugar de 'Ubicación actual'
+        const location = `${latitude},${longitude}`;
+        console.log("Ubicación a enviar:", location); // Añadir log para depuración
+  
+        try {
+          const data = await getWeather(location, token); // Usa las coordenadas aquí
+          setWeatherData(data);
+          setCityName(`${latitude},${longitude}`); // Esta es solo la etiqueta, puedes dejarla si quieres mostrarla en la UI
+        } catch (error) {
+          console.error("Error obteniendo la ubicación actual:", error);
+        }
+      },
+      (error) => {
         console.error("Error obteniendo la ubicación actual:", error);
       }
-    }, (error) => {
-      console.error("Error obteniendo la ubicación actual:", error);
-    });
+    );
   };
 
+  // Cargar datos meteorológicos y fase lunar
   useEffect(() => {
     async function fetchData() {
       try {
         const weather = await getWeather(cityName, token);
+        console.log("Datos del clima:", weather); // Verificar los datos de clima
         setWeatherData(weather);
+
         const lunar = await getLunarPhase(cityName, token);
+        console.log("Datos de la fase lunar:", lunar); // Verificar los datos de la fase lunar
         setLunarData(lunar);
       } catch (error) {
         console.error("Error al obtener datos:", error);
@@ -66,6 +82,11 @@ function WeatherDashboard({ onLogout, token = "", onAddFavorite = () => {} }) {
     }
     fetchData();
   }, [token, cityName]);
+
+  // Extraer el país de la dirección resuelta
+  const country = weatherData?.resolvedAddress
+    ? weatherData.resolvedAddress.split(',').pop()
+    : "País no disponible";
 
   return (
     <Container fluid>
@@ -76,11 +97,11 @@ function WeatherDashboard({ onLogout, token = "", onAddFavorite = () => {} }) {
       <Row className="justify-content-center mt-4">
         <Col md={6} lg={5}>
           <Card className="p-4 text-center">
-            <h2 className="mb-4">Información Meteorológica en {cityName}</h2>
-            <h3>Temperatura actual: {weatherData?.temp ?? "No disponible"} °C</h3>
-            <p>Viento: {weatherData?.wind ?? "No disponible"} km/h</p>
-            <p>Humedad: {weatherData?.humidity ?? "No disponible"}%</p>
-            <p>Probabilidad de Lluvia: {weatherData?.rainProbability ?? "No disponible"}%</p>
+            <h2 className="mb-4">Información Meteorológica en {cityName}, {country}</h2>
+            <h3>Temperatura actual: {weatherData?.currentConditions?.temp ?? "No disponible"} °C</h3>
+            <p>Viento: {weatherData?.currentConditions?.windspeed ?? "No disponible"} km/h</p>
+            <p>Humedad: {weatherData?.currentConditions?.humidity ?? "No disponible"}%</p>
+            <p>Probabilidad de Lluvia: {weatherData?.currentConditions?.precip ?? "0"}%</p>
             <Button onClick={handleAddFavorite} className="mt-3 btn-primary">
               Agregar a Favoritos
             </Button>

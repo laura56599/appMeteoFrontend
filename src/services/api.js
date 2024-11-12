@@ -24,6 +24,7 @@ const api = axios.create({
 // Función para obtener datos del clima
 export const getWeather = async (location, token) => {
   try {
+    console.log("Location en la solicitud:", location); // Log para verificar el valor de location
     const response = await axios.get(`${API_BASE_URL}/weather`, {
       params: { location },
       headers: {
@@ -32,7 +33,7 @@ export const getWeather = async (location, token) => {
     });
     return response.data.data; // Asegúrate de acceder a la data correctamente
   } catch (error) {
-    console.error('Error al obtener el clima:', error);
+    console.error("Error al obtener el clima:", error);
     throw error;
   }
 };
