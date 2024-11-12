@@ -12,7 +12,7 @@ function HamburgerMenu({ onLogout }) {
   return (
     <>
       {/* Botón para abrir el menú hamburguesa */}
-      <Navbar bg="primary" variant="dark" expand="lg" className="mb-3">
+      <Navbar bg="primary" variant="dark" expand={false} className="mb-3">
         <Navbar.Brand href="#">
           {/* Logo en el Navbar */}
           <img
@@ -31,16 +31,18 @@ function HamburgerMenu({ onLogout }) {
       </Navbar>
 
       {/* Menú Hamburguesa con Offcanvas */}
-      <Offcanvas show={showMenu} onHide={handleCloseMenu} placement="end">
-        <Offcanvas.Header closeButton>
+      <Offcanvas
+        show={showMenu}
+        onHide={handleCloseMenu}
+        placement="end"
+        className="bg-primary text-white"
+        style={{ width: "250px", padding: "0" }}
+      >
+        <Offcanvas.Header closeButton className="border-bottom border-light">
           <Offcanvas.Title>
             {/* Logo en el encabezado del Offcanvas */}
-            <div className="logo-container d-flex align-items-center">
-              <img
-                src={logo}
-                alt="Logo Meteorológico"
-                className="logo-img me-2"
-              />
+            <div className="d-flex align-items-center">
+              <img src={logo} alt="Logo Meteorológico" width="30" height="30" className="me-2" />
               <span>Weather App</span>
             </div>
           </Offcanvas.Title>
@@ -51,7 +53,7 @@ function HamburgerMenu({ onLogout }) {
             <Nav.Item>
               <Link
                 to="/weather"
-                className="nav-link"
+                className="nav-link text-white"
                 onClick={handleCloseMenu}
               >
                 Información del Clima Actual
@@ -60,7 +62,7 @@ function HamburgerMenu({ onLogout }) {
             <Nav.Item>
               <Link
                 to="/lunar-phase"
-                className="nav-link"
+                className="nav-link text-white"
                 onClick={handleCloseMenu}
               >
                 Fase Lunar Actual
@@ -69,7 +71,7 @@ function HamburgerMenu({ onLogout }) {
             <Nav.Item>
               <Link
                 to="/weekly-forecast"
-                className="nav-link"
+                className="nav-link text-white"
                 onClick={handleCloseMenu}
               >
                 Pronóstico Semanal
@@ -78,16 +80,16 @@ function HamburgerMenu({ onLogout }) {
             <Nav.Item>
               <Link
                 to="/favorites"
-                className="nav-link"
+                className="nav-link text-white"
                 onClick={handleCloseMenu}
               >
                 Favoritos
               </Link>
             </Nav.Item>
-            <Nav.Item>
-              <button className="btn btn-danger mt-3" onClick={onLogout}>
+            <Nav.Item className="mt-3">
+              <Button variant="danger" onClick={onLogout} block>
                 Cerrar Sesión
-              </button>
+              </Button>
             </Nav.Item>
           </Nav>
         </Offcanvas.Body>

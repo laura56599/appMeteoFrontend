@@ -1,45 +1,40 @@
 import React from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { Container, Row, Col, Button, FormControl, InputGroup } from "react-bootstrap";
 import PropTypes from "prop-types";
 
 function Header({ onSearch, onCurrentLocation }) {
-  const [city, setCity] = React.useState("");
-
-  const handleSearch = () => {
-    onSearch(city);
-    if (!city.trim()) {
-      alert("Por favor, ingrese una ciudad.");
-      return;
+  const handleSearch = (event) => {
+    if (event.key === "Enter") {
+      onSearch(event.target.value);
     }
-    onSearch(city);
   };
 
-  const handleCurrentLocation = () => {
-    console.log("Buscando ubicación actual");
-    onCurrentLocation();
-  };
   return (
-    <header className="header container-fluid bg-primary text-light py-3 d-flex justify-content-between align-items-center">
-      <div className="search-container d-flex align-items-center">
-        <input
-          type="text"
-          placeholder="Ingrese Ciudad"
-          className="form-control me-2"
-          value={city}
-          onChange={(e) => setCity(e.target.value)}
-        />
-        <button onClick={handleSearch} className="btn btn-light me-2">
-          Buscar
-        </button>
-        <button
-          onClick={handleCurrentLocation}
-          className="btn btn-outline-light"
-        >
-          Ubicación Actual
-        </button>
-      </div>
-    </header>
+    <Container fluid className="bg-primary py-3">
+      <Row className="justify-content-center">
+        <Col xs={12} sm={8} md={6} lg={4}>
+          <InputGroup>
+            <FormControl
+              placeholder="Ingrese Ciudad"
+              aria-label="Ingrese Ciudad"
+              onKeyDown={handleSearch}
+            />
+            <Button variant="secondary" onClick={() => onSearch(document.querySelector("input").value)}>
+              Buscar
+            </Button>
+            <Button variant="outline-light" onClick={onCurrentLocation} className="ms-2">
+              Ubicación Actual
+            </Button>
+          </InputGroup>
+        </Col>
+      </Row>
+    </Container>
   );
 }
+
+Header.propTypes = {
+  onSearch: PropTypes.func.isRequired,
+  onCurrentLocation: PropTypes.func.isRequired,
+};
 
 export default Header;
