@@ -15,38 +15,40 @@ function LunarPhase({ data }) {
   let illumination;
   let formattedDate;
 
-  if (data && data.phase && typeof data.phase === "number") {
+  if (data && typeof data.phase === "number") {
     const phase = data.phase;
 
-    // Asignar fase lunar a valor correspondiente
+    // Asignación de fase lunar y valores correspondientes
     if (phase >= 0 && phase < 0.05) {
       phaseDescription = "Luna Nueva";
-      phaseImage = newMoonImage;
+      phaseImage = newMoon;
     } else if (phase >= 0.05 && phase < 0.25) {
       phaseDescription = "Creciente";
-      phaseImage = waxinggibbous;
+      phaseImage = crescentMoon;
     } else if (phase >= 0.25 && phase < 0.5) {
       phaseDescription = "Cuarto Creciente";
       phaseImage = crescentMoon;
     } else if (phase >= 0.5 && phase < 0.75) {
       phaseDescription = "Luna Llena";
-      phaseImage = fullMoonImage;
+      phaseImage = fullMoon;
     } else if (phase >= 0.75 && phase < 1) {
       phaseDescription = "Gibosa Menguante";
-      phaseImage = waninggibbous;
+      phaseImage = waxingGibbous;
     } else {
       phaseDescription = "Luna Nueva";
-      phaseImage = newMoonImage;
+      phaseImage = newMoon;
     }
 
     // Mostrar porcentaje de iluminación
     illumination = `${(data.illumination * 100).toFixed(0)}%`;
+    formattedDate = data.date || "Fecha no disponible";
   } else {
+    // En caso de datos no disponibles
     phaseDescription = "Fase Desconocida";
     phaseImage = defaultMoonImage;
     illumination = "Desconocido";
+    formattedDate = "Fecha no disponible";
   }
-
 
   return (
     <div className="lunar-phase-card">
@@ -54,14 +56,18 @@ function LunarPhase({ data }) {
         <h3>Fase Lunar Actual</h3>
       </div>
       <div className="lunar-phase-card-body">
-        <img src={phaseImage} alt={phaseDescription} className="lunar-phase-image" />
-        <p>Fase Lunar: {phaseDescription}</p>
-        <p>Iluminación: {illumination}</p>
-        <p>Fecha: {data.date}</p>
+        <img
+          src={phaseImage}
+          alt={phaseDescription}
+          className="lunar-phase-image"
+          style={{ width: "100px", height: "100px" }}
+        />
+        <p><strong>Fase Lunar:</strong> {phaseDescription}</p>
+        <p><strong>Iluminación:</strong> {illumination}</p>
+        <p><strong>Fecha:</strong> {formattedDate}</p>
       </div>
     </div>
   );
 }
-
 
 export default LunarPhase;

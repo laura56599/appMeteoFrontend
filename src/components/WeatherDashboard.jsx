@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getWeather, getLunarPhase } from "../services/api";
+import MainWeatherInfo from "./MainWeatherInfo";
 import LunarPhase from "./LunarPhase";
 import WeeklyForecast from "./Weeklyforecast";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
@@ -37,17 +38,15 @@ function WeatherDashboard({ onLogout, token = "", onAddFavorite = () => {} }) {
     }
   };
 
-  // Función para obtener ubicación actual
+ // Define la función onCurrentLocation
   const handleCurrentLocation = async () => {
+    // Lógica para obtener la ubicación actual del usuario
+    // Ejemplo básico
     navigator.geolocation.getCurrentPosition(async (position) => {
       const { latitude, longitude } = position.coords;
-      try {
-        const data = await getWeather(`${latitude},${longitude}`, token);
-        setWeatherData(data);
-        setCityName("Ubicación actual");
-      } catch (error) {
-        console.error("Error obteniendo la ubicación actual:", error);
-      }
+      const data = await getWeather(`${latitude},${longitude}`, token);
+      setWeatherData(data);
+      setCityName("Ubicación actual");
     }, (error) => {
       console.error("Error obteniendo la ubicación actual:", error);
     });
@@ -70,7 +69,7 @@ function WeatherDashboard({ onLogout, token = "", onAddFavorite = () => {} }) {
   return (
     <Container fluid>
       <HamburgerMenu onLogout={onLogout} />
-      <Header onSearch={handleCitySearch} onCurrentLocation={handleCurrentLocation} />
+      <Header onSearch={handleCitySearch} />
 
       {/* Información meteorológica y fase lunar */}
       <Row className="justify-content-center mt-4">
