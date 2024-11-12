@@ -2,7 +2,7 @@ import React from "react";
 import { Container, Row, Col, Button, FormControl, InputGroup } from "react-bootstrap";
 import PropTypes from "prop-types";
 
-function Header({ onSearch, onCurrentLocation }) {
+function Header({ onSearch, handleCurrentLocation }) {
   const handleSearch = (event) => {
     if (event.key === "Enter") {
       onSearch(event.target.value);
@@ -22,7 +22,7 @@ function Header({ onSearch, onCurrentLocation }) {
             <Button variant="secondary" onClick={() => onSearch(document.querySelector("input").value)}>
               Buscar
             </Button>
-            <Button variant="outline-light" onClick={onCurrentLocation} className="ms-2">
+            <Button variant="outline-light" onClick={handleCurrentLocation} className="ms-2">
               Ubicación Actual
             </Button>
           </InputGroup>
@@ -34,7 +34,7 @@ function Header({ onSearch, onCurrentLocation }) {
 
 Header.propTypes = {
   onSearch: PropTypes.func.isRequired,
-  onCurrentLocation: PropTypes.func.isRequired,
+  handleCurrentLocation: PropTypes.func.isRequired,
 };
 
 export default Header;

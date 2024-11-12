@@ -46,12 +46,12 @@ function WeatherDashboard({ onLogout, token = "", onAddFavorite = () => {} }) {
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        console.log("Coordenadas obtenidas:", latitude, longitude); // Añadir log para depuración
-  
+        console.log("Coordenadas obtenidas:", latitude, longitude); // Log para depuración
+
         // Cambia aquí para pasar las coordenadas en lugar de 'Ubicación actual'
         const location = `${latitude},${longitude}`;
-        console.log("Ubicación a enviar:", location); // Añadir log para depuración
-  
+        console.log("Ubicación a enviar:", location); // Log para depuración
+
         try {
           const data = await getWeather(location, token); // Usa las coordenadas aquí
           setWeatherData(data);
@@ -92,7 +92,8 @@ function WeatherDashboard({ onLogout, token = "", onAddFavorite = () => {} }) {
   return (
     <Container fluid>
       <HamburgerMenu onLogout={onLogout} />
-      <Header onSearch={handleCitySearch} />
+      <Header onSearch={handleCitySearch}
+      handleCurrentLocation={handleCurrentLocation} />
 
       {/* Información meteorológica y fase lunar */}
       <Row className="justify-content-center mt-4">
