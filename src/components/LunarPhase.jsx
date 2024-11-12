@@ -18,36 +18,38 @@ function LunarPhase({ data }) {
   // Verifica que data y los datos de fase estén presentes
   console.log("Datos recibidos:", data);  // Para depurar
 
-  if (data && data.phase && typeof data.phase === "number") {
+  if (data && typeof data.phase === "number") {
     const phase = data.phase;
 
-    // Asignar fase lunar a valor correspondiente
+    // Asignación de fase lunar y valores correspondientes
     if (phase >= 0 && phase < 0.05) {
       phaseDescription = "Luna Nueva";
-      phaseImage = newMoonImage;
+      phaseImage = newMoon;
     } else if (phase >= 0.05 && phase < 0.25) {
       phaseDescription = "Creciente";
-      phaseImage = waxinggibbous;
+      phaseImage = crescentMoon;
     } else if (phase >= 0.25 && phase < 0.5) {
       phaseDescription = "Cuarto Creciente";
       phaseImage = crescentMoon;
     } else if (phase >= 0.5 && phase < 0.75) {
       phaseDescription = "Luna Llena";
-      phaseImage = fullMoonImage;
+      phaseImage = fullMoon;
     } else if (phase >= 0.75 && phase < 1) {
       phaseDescription = "Gibosa Menguante";
-      phaseImage = waninggibbous;
+      phaseImage = waxingGibbous;
     } else {
       phaseDescription = "Luna Nueva";
-      phaseImage = newMoonImage;
+      phaseImage = newMoon;
     }
 
     // Calcular iluminación como un porcentaje basado en la fase
     illumination = `${(phase * 100).toFixed(0)}%`;  // Se multiplica por 100 para convertirlo a porcentaje
   } else {
+    // En caso de datos no disponibles
     phaseDescription = "Fase Desconocida";
     phaseImage = defaultMoonImage;
     illumination = "Desconocido";
+    formattedDate = "Fecha no disponible";
   }
 
   return (

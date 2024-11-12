@@ -20,10 +20,10 @@ import defaultIcon from "../assets/weather/default.svg";
   
 // Mapea las condiciones del clima a los archivos SVG en assets
 const getWeatherIcon = (condition) => {
-  if (condition.includes("nublado")) return cloudyIcon;
-  if (condition.includes("lluvia")) return rainyIcon;
-  if (condition.includes("soleado") || condition.includes("despejado")) return sunnyIcon;
-  if (condition.includes("tormenta")) return stormIcon;
+  if (condition.includes("Nublado")) return cloudyIcon;
+  if (condition.includes("Lluvia")) return rainyIcon;
+  if (condition.includes("Soleado") || condition.includes("Claro")) return sunnyIcon;
+  if (condition.includes("Tormenta")) return stormIcon;
   return defaultIcon; // Ícono predeterminado
 };
 
@@ -34,12 +34,19 @@ function WeeklyForecast({ data }) {
     <div className="d-flex flex-wrap justify-content-center weekly-forecast-container">
       {data.map((day, index) => (
         <div key={index} className="card text-white bg-primary m-2" style={{ width: '18rem' }}>
-          <div className="card-header text-center">
-            <p className="forecast-day"><strong>{getDayName(day?.datetime) || "No disponible"}</strong></p>
-            <p className="forecast-date">{getFormattedDate(day?.datetime) || "No disponible"}</p>
-            <img src={getWeatherIcon(day?.conditions)} alt="Icono del clima" style={{ width: '50px', height: '50px' }} />
+          <div className="card-header text-center d-flex align-items-center justify-content-between">
+            <div>
+              <p className="forecast-day mb-0"><strong>{getDayName(day?.datetime) || "No disponible"}</strong></p>
+              <p className="forecast-date mb-0">{getFormattedDate(day?.datetime) || "No disponible"}</p>
+            </div>
+            <img
+              src={getWeatherIcon(day?.conditions)}
+              alt="Icono del clima"
+              style={{ width: '70px', height: '70px' }} // Aumenta el tamaño del icono
+              className="ms-2"
+            />
           </div>
-          <div className="card-body forecast-day-card-body">
+          <div className="card-body forecast-day-card-body text-center">
             <p className="card-text"><strong>Temperatura Máxima:</strong> {day?.tempmax || "No disponible"}°C</p>
             <p className="card-text"><strong>Temperatura Mínima:</strong> {day?.tempmin || "No disponible"}°C</p>
             <p className="card-text"><strong>Condición:</strong> {day?.conditions || "No disponible"}</p>

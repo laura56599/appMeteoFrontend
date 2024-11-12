@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getWeather, getLunarPhase } from "../services/api";
+import MainWeatherInfo from "./MainWeatherInfo";
 import LunarPhase from "./LunarPhase";
 import WeeklyForecast from "./WeeklyForecast";
 import { Container, Row, Col, Button, Card } from "react-bootstrap";
@@ -91,7 +92,7 @@ function WeatherDashboard({ onLogout, token = "", onAddFavorite = () => {} }) {
   return (
     <Container fluid>
       <HamburgerMenu onLogout={onLogout} />
-      <Header onSearch={handleCitySearch} onCurrentLocation={handleCurrentLocation} />
+      <Header onSearch={handleCitySearch} />
 
       {/* Información meteorológica y fase lunar */}
       <Row className="justify-content-center mt-4">
